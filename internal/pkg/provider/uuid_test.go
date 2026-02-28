@@ -2,9 +2,13 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-package provider
+package provider_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/siderolabs/omni-infra-provider-vsphere/internal/pkg/provider"
+)
 
 func TestConvertVSphereUUIDToTalosFormat(t *testing.T) {
 	tests := []struct {
@@ -41,11 +45,13 @@ func TestConvertVSphereUUIDToTalosFormat(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := convertVSphereUUIDToTalosFormat(tt.vsphereUUID)
+			got, err := provider.ConvertVSphereUUIDToTalosFormat(tt.vsphereUUID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("convertVSphereUUIDToTalosFormat() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
+
 			if got != tt.want {
 				t.Errorf("convertVSphereUUIDToTalosFormat() = %v, want %v", got, tt.want)
 			}

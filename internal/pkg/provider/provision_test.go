@@ -7,24 +7,23 @@ package provider_test
 import (
 	"testing"
 
+	"github.com/siderolabs/omni/client/pkg/infra/provision"
+	"github.com/siderolabs/omni/client/pkg/omni/resources/infra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zaptest"
-
-	"github.com/siderolabs/omni/client/pkg/infra/provision"
-	"github.com/siderolabs/omni/client/pkg/omni/resources/infra"
 
 	"github.com/siderolabs/omni-infra-provider-vsphere/internal/pkg/provider/resources"
 )
 
 func TestVMNameMatchesHostname(t *testing.T) {
 	tests := []struct {
-		name                  string
-		requestID             string
-		machineRequestSetID   string
-		expectedVMName        string
-		expectedHostname      string
+		name                string
+		requestID           string
+		machineRequestSetID string
+		expectedVMName      string
+		expectedHostname    string
 	}{
 		{
 			name:                "VM name should match request ID with suffix",
@@ -90,7 +89,6 @@ func TestVMNameMatchesHostname(t *testing.T) {
 func TestProvisionerUsesCorrectVMName(t *testing.T) {
 	// This test verifies that the provisioner uses GetRequestID() for the VM name
 	// which ensures VM name matches the hostname set in the config patch
-
 	requestID := "test-cluster-workers-abc123"
 	machineRequestSetID := "test-cluster-workers"
 
@@ -143,7 +141,6 @@ func TestUUIDConversionInProvisioning(t *testing.T) {
 	// This test verifies that vSphere UUIDs are converted to Talos format
 	// before being set in MachineRequestStatus, ensuring config patches
 	// are correctly linked to machines
-
 	tests := []struct {
 		name         string
 		vsphereUUID  string

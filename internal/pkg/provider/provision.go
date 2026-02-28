@@ -354,8 +354,8 @@ func (p *Provisioner) ProvisionSteps() []provision.Step[*resources.Machine] {
 				if data.DiskSize > 0 {
 					logger.Info("resizing VM disk", zap.String("name", vmName), zap.Uint64("disk_size_gib", data.DiskSize))
 
-					if err := resizeDisk(ctx, vm, data.DiskSize); err != nil {
-						return provision.NewRetryErrorf(time.Second*10, "failed to resize disk: %w", err)
+					if resizeErr := resizeDisk(ctx, vm, data.DiskSize); resizeErr != nil {
+						return provision.NewRetryErrorf(time.Second*10, "failed to resize disk: %w", resizeErr)
 					}
 				}
 
@@ -363,8 +363,8 @@ func (p *Provisioner) ProvisionSteps() []provision.Step[*resources.Machine] {
 				if data.Network != "" {
 					logger.Info("configuring VM network", zap.String("name", vmName), zap.String("network", data.Network))
 
-					if err := configureNetwork(ctx, finder, vm, data.Network); err != nil {
-						return provision.NewRetryErrorf(time.Second*10, "failed to configure network: %w", err)
+					if netErr := configureNetwork(ctx, finder, vm, data.Network); netErr != nil {
+						return provision.NewRetryErrorf(time.Second*10, "failed to configure network: %w", netErr)
 					}
 				}
 
@@ -375,7 +375,8 @@ func (p *Provisioner) ProvisionSteps() []provision.Step[*resources.Machine] {
 				// Get VM UUID and convert it to Talos format
 				// vSphere UUIDs have byte-swapped first 3 groups compared to what Talos reports
 				vsphereUUID := vm.UUID(ctx)
-				talosUUID, err := convertVSphereUUIDToTalosFormat(vsphereUUID)
+
+				talosUUID, err := ConvertVSphereUUIDToTalosFormat(vsphereUUID)
 				if err != nil {
 					return provision.NewRetryErrorf(time.Second*10, "failed to convert UUID: %w", err)
 				}

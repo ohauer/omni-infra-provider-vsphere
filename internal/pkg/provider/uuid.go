@@ -10,15 +10,16 @@ import (
 	"strings"
 )
 
-// convertVSphereUUIDToTalosFormat converts a vSphere UUID to the format that Talos reports.
+// ConvertVSphereUUIDToTalosFormat converts a vSphere UUID to the format that Talos reports.
 // vSphere UUIDs have the first 3 groups byte-swapped compared to what Talos reports.
 //
 // Example:
+//
 //   vSphere: 422413c3-57c8-96d1-c481-c58dbb837d2d
 //   Talos:   c3132442-c857-d196-c481-c58dbb837d2d
 //
 // The last two groups (clock_seq and node) remain the same.
-func convertVSphereUUIDToTalosFormat(vsphereUUID string) (string, error) {
+func ConvertVSphereUUIDToTalosFormat(vsphereUUID string) (string, error) {
 	// Remove hyphens and validate length
 	uuid := strings.ReplaceAll(vsphereUUID, "-", "")
 	if len(uuid) != 32 {
